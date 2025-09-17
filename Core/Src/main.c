@@ -29,11 +29,36 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
+#define STX 0x02
+#define ETX 0x03
+
+#define CMD_LED_OFF 0xC0
+#define CMD_LED_ON 0xC1
+#define CMD_LED_BLINK 0xC2
+
+#define UART_TX_BUFFER_SIZE 128
+#define UART_RX_BUFFER_SIZE 128
+
+typedef struct {
+  uint8_t buffer[UART_RX_BUFFER_SIZE];
+  uint8_t temp;
+  volatile uint16_t input_p;
+  volatile uint16_t output_p;
+} UART_RingBufferRx;
+
+typedef struct {
+  uint8_t buffer[UART_TX_BUFFER_SIZE];
+  volatile uint16_t input_p;
+  volatile uint16_t output_p;
+  uint8_t busy;
+} UART_RingBufferTx;
 
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+
+
 
 /* USER CODE END PD */
 
@@ -56,6 +81,11 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+uint8_t rx_data;
+int mode = 0;
+int toggle_count = 0;
+int toggle_done = 0;
+uint8_t waiting_count = 0;
 
 /* USER CODE END 0 */
 
@@ -92,6 +122,8 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim4);
+  HAL_UART_Receive_IT(&huart2, &rx_data, 1);
+  print_cmd();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -99,7 +131,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+    HAL_Delay(500);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -160,9 +192,146 @@ void SystemClock_Config(void)
 	}
 }*/
 
-void HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef *htim){
+UART_RingBufferTx uart_hal_tx;
+UART_RingBufferRx uart_hal_rx;
+
+void uart_hal_buffer_init() {
+  uart_hal_rx.input_p = uart_hal_tx.input_p = 0;
+  uart_hal_rx.output_p = uart_hal_tx.output_p = 0;
+
+  HAL_UART_Receive_IT(&huart2, &uart_hal_rx.temp, 1);
+}
+
+int uart_hal_getchar(uint8_t *data) { // PC > STM 
+  if (uart_hal_rx.input_p == uart_hal_rx.output_p) return 0; 
+  *data = uart_hal_rx.buffer[uart_hal_rx.output_p++];
+  if(uart_hal_rx.output_p >= UART_RX_BUFFER_SIZE) {
+    uart_hal_rx.output_p = 0; 
+  }
+  return 1;
+}
+
+void uart_hal_putchar(uint8_t data) { // STM > PC
+  uart_hal_tx.buffer[uart_hal_tx.input_p++] = data;
+  if(uart_hal_tx.input_p >= UART_TX_BUFFER_SIZE) { 
+    uart_hal_tx.input_p = 0;
+  } 
+
+  if (!uart_hal_tx.busy) {
+        uart_hal_tx.busy = 1;
+        uint8_t data = uart_hal_tx.buffer[uart_hal_tx.output_p++];
+        if (uart_hal_tx.output_p >= UART_TX_BUFFER_SIZE) uart_hal_tx.output_p = 0;
+        HAL_UART_Transmit_IT(&huart2, &data, 1);
+    }
+}
+
+void uart_hal_send(uint8_t *data, uint16_t len) {
+  for(int i = 0; i < len; i++) {
+    uart_hal_putchar(data[i]);
+  }
+}
+
+void HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef *htim) {
   if(htim->Instance==TIM4) {
     task_timer();
+  }
+}
+
+int __io_putchar (int ch) {
+    (void) HAL_UART_Transmit(&huart2, (uint8_t*) &ch, 1, 100);
+    return ch;
+  }
+
+  void print_cmd(void) {
+  printf("----------\r\n");
+  printf("1: LED On\r\n");
+  printf("2: LED Off\r\n");
+  printf("3: LED Blink\r\n");
+  printf("----------\r\nEnter Command:\r\n");
+}
+
+  void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
+  if(huart->Instance == USART2) {
+    if(uart_hal_tx.input_p != uart_hal_tx.output_p) {
+      uint8_t data = uart_hal_tx.buffer[uart_hal_tx.output_p++];
+      if(uart_hal_tx.output_p >= UART_TX_BUFFER_SIZE) {
+        uart_hal_tx.output_p = 0;
+      }
+      HAL_UART_Transmit_IT(&huart2, &data, 1);
+    } else {
+      uart_hal_tx.busy = 0;
+    }
+  }
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+  if(huart->Instance == USART2) {
+    uart_hal_rx.buffer[uart_hal_rx.input_p++] = uart_hal_rx.temp; 
+    if(uart_hal_rx.input_p >= UART_RX_BUFFER_SIZE) {
+      uart_hal_rx.input_p = 0;
+    }
+    HAL_UART_Receive_IT(huart, &uart_hal_rx.temp, 1); 
+  }
+}
+
+void uart_send_packet(uint8_t cmd, uint8_t d0, uint8_t d1) {
+  uint8_t packet[6];
+  packet[0] = STX;
+  packet[1] = cmd;
+  packet[2] = d0;
+  packet[3] = d1;
+  packet[4] = 0xff - (cmd + d0 + d1);
+  packet[5] = ETX; 
+
+  uart_hal_send(packet, 6);
+}
+
+void uart_protocol(void) {
+  static uint8_t packet[6];
+  static uint8_t index = 0;
+  uint8_t data;
+
+  while (uart_hal_getchar(&data)) {
+    if(index == 0 && data == STX) {
+      continue;
+    } 
+    packet[index++] = data;
+
+    if(packet[0] == STX && packet[5] == ETX) {
+      uint8_t cmd = packet[1];
+      uint8_t d0 = packet[2];
+      uint8_t d1 = packet[3];
+      uint8_t sum = packet[4];
+
+      if(sum == 0xff - (cmd + d0 + d1)) {
+        switch (cmd)
+        {
+        case CMD_LED_OFF:
+          HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+          uart_send_packet(0xff, 0, 0);
+          break;
+
+        case CMD_LED_ON:
+          HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+          uart_send_packet(0xff, 0, 0);
+          break;
+
+        case CMD_LED_BLINK://??????
+          if(d1 == 0) {
+            task_led();
+          } else {
+            for(int i = 0; i < d1; i++) {
+              task_led();
+            }
+          }
+          uart_send_packet(0xff, 0, 0);
+        
+        default:
+          uart_send_packet(0xff, 1, 0);
+          break;
+        }
+      }
+    }
   }
 }
 
