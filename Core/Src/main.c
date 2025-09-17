@@ -58,8 +58,6 @@ typedef struct {
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 
-
-
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -82,10 +80,6 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 uint8_t rx_data;
-int mode = 0;
-int toggle_count = 0;
-int toggle_done = 0;
-uint8_t waiting_count = 0;
 
 /* USER CODE END 0 */
 
@@ -122,8 +116,9 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim4);
-  HAL_UART_Receive_IT(&huart2, &rx_data, 1);
-  print_cmd();
+
+  uart_hal_buffer_init();
+  //print_cmd();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -131,7 +126,8 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-    HAL_Delay(500);
+    uart_protocol();
+    HAL_Delay(100);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -198,6 +194,7 @@ UART_RingBufferRx uart_hal_rx;
 void uart_hal_buffer_init() {
   uart_hal_rx.input_p = uart_hal_tx.input_p = 0;
   uart_hal_rx.output_p = uart_hal_tx.output_p = 0;
+  uart_hal_tx.busy = 0;
 
   HAL_UART_Receive_IT(&huart2, &uart_hal_rx.temp, 1);
 }
@@ -237,18 +234,18 @@ void HAL_TIM_PeriodElapsedCallback (TIM_HandleTypeDef *htim) {
   }
 }
 
-int __io_putchar (int ch) {
+/*int __io_putchar (int ch) {
     (void) HAL_UART_Transmit(&huart2, (uint8_t*) &ch, 1, 100);
     return ch;
   }
 
-  void print_cmd(void) {
+ void print_cmd(void) {
   printf("----------\r\n");
   printf("1: LED On\r\n");
   printf("2: LED Off\r\n");
   printf("3: LED Blink\r\n");
   printf("----------\r\nEnter Command:\r\n");
-}
+}*/ 
 
   void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
   if(huart->Instance == USART2) {
@@ -292,7 +289,7 @@ void uart_protocol(void) {
   uint8_t data;
 
   while (uart_hal_getchar(&data)) {
-    if(index == 0 && data == STX) {
+    if(index == 0 && data != STX) {
       continue;
     } 
     packet[index++] = data;
@@ -316,7 +313,7 @@ void uart_protocol(void) {
           uart_send_packet(0xff, 0, 0);
           break;
 
-        case CMD_LED_BLINK://??????
+        /*case CMD_LED_BLINK: //??????
           if(d1 == 0) {
             task_led();
           } else {
@@ -324,14 +321,17 @@ void uart_protocol(void) {
               task_led();
             }
           }
-          uart_send_packet(0xff, 0, 0);
+          uart_send_packet(0xff, 0, 0);*/
         
         default:
-          uart_send_packet(0xff, 1, 0);
+          uart_send_packet(0xfe, 0x01, 0);
           break;
         }
+      } else {
+        uart_send_packet(0xfe, 0x01, 0);
       }
     }
+    index = 0;
   }
 }
 

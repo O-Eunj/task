@@ -28,3 +28,7 @@
 52	1087	7796243153974478	CMakeFiles/task.dir/Core/Src/task.c.obj	de3a9f0b227697a1
 36	1084	7796243154329688	CMakeFiles/task.dir/Core/Src/usart.c.obj	c0d16b5c0e479122
 78	746	7796243475900859	cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c.obj	3764f7136b61c736
+54	629	7797864223918631	CMakeFiles/task.dir/Core/Src/main.c.obj	92edb903bc524
+629	1356	7797864230907974	task.elf	d469ce3287868327
+25	240	7797870274309986	CMakeFiles/task.dir/Core/Src/main.c.obj	92edb903bc524
+241	395	7797870275750881	task.elf	d469ce3287868327
