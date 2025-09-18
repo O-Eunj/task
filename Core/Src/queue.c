@@ -12,7 +12,7 @@ bool full_queue(Queue* q) {
     return (q->size == MAX_QUEUE);
 }
 
-void push_queue(Queue* q, int value) {
+void push_queue(Queue* q, uint8_t value) {
     if (!full_queue(q)) {
         q->data[q->tail] = value;
         q->tail = (q->tail + 1) % MAX_QUEUE;
@@ -20,7 +20,7 @@ void push_queue(Queue* q, int value) {
     }
 }
 
-bool pop_queue(Queue* q, int* value) {
+bool pop_queue(Queue* q, uint8_t* value) {
     if (empty_queue(q)) return false;
     *value = q->data[q->head];
     q->head = (q->head + 1) % MAX_QUEUE;

@@ -47,6 +47,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
     Core/Src/task.c
     Core/Src/queue.c
+    Core/Src/taskuart.c
 )
 
 # Add include paths

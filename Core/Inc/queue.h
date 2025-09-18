@@ -2,6 +2,7 @@
 #define QUEUE_H
 
 #include <stdbool.h>
+#include <stdint.h>
 
 #define MAX_QUEUE 5
 
@@ -15,7 +16,7 @@ typedef struct {
 void init_queue(Queue* q);
 bool empty_queue(Queue* q);
 bool full_queue(Queue* q);
-void push_queue(Queue* q, int value);
-bool pop_queue(Queue* q, int* value);
+void push_queue(Queue* q, uint8_t value);
+bool pop_queue(Queue* q, uint8_t* value);
 
 #endif
