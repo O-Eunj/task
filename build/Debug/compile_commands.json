@@ -61,6 +61,12 @@
 },
 {
   "directory": "C:/Users/dmswl/Documents/STM32CubeMX/task/build/Debug",
+  "command": "C:\\ST\\STM32CubeCLT_1.19.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F401xE -DUSE_HAL_DRIVER -IC:/Users/dmswl/Documents/STM32CubeMX/task/Core/Inc -IC:/Users/dmswl/Documents/STM32CubeMX/task/cmake/stm32cubemx/../../Core/Inc -IC:/Users/dmswl/Documents/STM32CubeMX/task/cmake/stm32cubemx/../../Drivers/STM32F4xx_HAL_Driver/Inc -IC:/Users/dmswl/Documents/STM32CubeMX/task/cmake/stm32cubemx/../../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -IC:/Users/dmswl/Documents/STM32CubeMX/task/cmake/stm32cubemx/../../Drivers/CMSIS/Device/ST/STM32F4xx/Include -IC:/Users/dmswl/Documents/STM32CubeMX/task/cmake/stm32cubemx/../../Drivers/CMSIS/Include  -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard  -Wall -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o CMakeFiles\\task.dir\\Core\\Src\\queue.c.obj -c C:\\Users\\dmswl\\Documents\\STM32CubeMX\\task\\Core\\Src\\queue.c",
+  "file": "C:\\Users\\dmswl\\Documents\\STM32CubeMX\\task\\Core\\Src\\queue.c",
+  "output": "CMakeFiles\\task.dir\\Core\\Src\\queue.c.obj"
+},
+{
+  "directory": "C:/Users/dmswl/Documents/STM32CubeMX/task/build/Debug",
   "command": "C:\\ST\\STM32CubeCLT_1.19.0\\GNU-tools-for-STM32\\bin\\arm-none-eabi-gcc.exe -DDEBUG -DSTM32F401xE -DUSE_HAL_DRIVER -IC:/Users/dmswl/Documents/STM32CubeMX/task/cmake/stm32cubemx/../../Core/Inc -IC:/Users/dmswl/Documents/STM32CubeMX/task/cmake/stm32cubemx/../../Drivers/STM32F4xx_HAL_Driver/Inc -IC:/Users/dmswl/Documents/STM32CubeMX/task/cmake/stm32cubemx/../../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -IC:/Users/dmswl/Documents/STM32CubeMX/task/cmake/stm32cubemx/../../Drivers/CMSIS/Device/ST/STM32F4xx/Include -IC:/Users/dmswl/Documents/STM32CubeMX/task/cmake/stm32cubemx/../../Drivers/CMSIS/Include  -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard  -Wall -fdata-sections -ffunction-sections -O0 -g3 -std=gnu11 -o cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Core\\Src\\system_stm32f4xx.c.obj -c C:\\Users\\dmswl\\Documents\\STM32CubeMX\\task\\Core\\Src\\system_stm32f4xx.c",
   "file": "C:\\Users\\dmswl\\Documents\\STM32CubeMX\\task\\Core\\Src\\system_stm32f4xx.c",
   "output": "cmake\\stm32cubemx\\CMakeFiles\\STM32_Drivers.dir\\__\\__\\Core\\Src\\system_stm32f4xx.c.obj"

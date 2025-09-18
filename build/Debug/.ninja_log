@@ -3,7 +3,7 @@
 42	323	7793666767422789	CMakeFiles/task.dir/startup_stm32f401xe.s.obj	fb150515b97756ad
 41	1132	7796243154941421	CMakeFiles/task.dir/Core/Src/stm32f4xx_it.c.obj	8ee6bd4903c63b5f
 36	339	7793666767457155	CMakeFiles/task.dir/Core/Src/sysmem.c.obj	7015e60a4c300f25
-7	238	7796292402891559	CMakeFiles/task.dir/Core/Src/main.c.obj	92edb903bc524
+38	313	7797943301532501	CMakeFiles/task.dir/Core/Src/main.c.obj	92edb903bc524
 49	608	7796243474182607	cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr.c.obj	537986e9d7e5623
 31	512	7796243473342594	cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ramfunc.c.obj	e7d658769e2c653b
 84	1117	7796243154662514	cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash.c.obj	7243446235ea7e21
@@ -11,7 +11,7 @@
 70	1167	7796243154742964	cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c.obj	3b79ed4cea1ca9fa
 33	1082	7796243154130285	CMakeFiles/task.dir/Core/Src/tim.c.obj	718b3f895e264bdd
 47	1114	7796243154584374	CMakeFiles/task.dir/Core/Src/stm32f4xx_hal_msp.c.obj	b10e71d04c5f0bed
-23	295	7797710881938782	build.ninja	cdc24a78a12aa09b
+23	295	7798568260148701	build.ninja	cdc24a78a12aa09b
 56	1159	7796243154979481	cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Core/Src/system_stm32f4xx.c.obj	ec6c440166323db2
 66	1204	7796243155577289	cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c.obj	e3feb36e4f23842f
 90	1080	7796243153994579	cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ex.c.obj	32b9be70e9071026
@@ -24,11 +24,10 @@
 46	682	7796243475225877	cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.c.obj	f386bcd1644fedae
 60	681	7796243475168395	cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj	e027c34a47322d15
 64	569	7796243473951349	cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj	1abd49b4596660ba
-239	447	7796292404726387	task.elf	d469ce3287868327
+314	519	7797943303549142	task.elf	d469ce3287868327
 52	1087	7796243153974478	CMakeFiles/task.dir/Core/Src/task.c.obj	de3a9f0b227697a1
 36	1084	7796243154329688	CMakeFiles/task.dir/Core/Src/usart.c.obj	c0d16b5c0e479122
 78	746	7796243475900859	cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c.obj	3764f7136b61c736
-54	629	7797864223918631	CMakeFiles/task.dir/Core/Src/main.c.obj	92edb903bc524
-629	1356	7797864230907974	task.elf	d469ce3287868327
-25	240	7797870274309986	CMakeFiles/task.dir/Core/Src/main.c.obj	92edb903bc524
-241	395	7797870275750881	task.elf	d469ce3287868327
+138	498	7798620852480783	CMakeFiles/task.dir/Core/Src/queue.c.obj	bae69b25bab12ce1
+2	202	7798628066945750	CMakeFiles/task.dir/Core/Src/main.c.obj	92edb903bc524
+203	934	7798628074036749	task.elf	f23e1e56416714b0
