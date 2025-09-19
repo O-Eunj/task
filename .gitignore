@@ -1,0 +1,91 @@
+# Build directories
+build/
+Debug/
+Release/
+
+# CMake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
+Makefile
+*.ninja
+*.ninja_deps
+*.ninja_log
+
+# Generated binaries and object files
+*.o
+*.obj
+*.elf
+*.bin
+*.hex
+*.map
+*.lst
+*.su
+*.d
+*.a
+*.so
+*.lib
+
+# Debug files
+*.dSYM/
+*.dwarf
+
+# IDE and editor files
+.vscode/
+*.code-workspace
+.idea/
+*.iml
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# STM32CubeMX generated files (keep the .ioc file but ignore some generated content)
+# Uncomment the following lines if you want to ignore specific generated files:
+# Drivers/CMSIS/
+# Drivers/STM32F4xx_HAL_Driver/
+
+# Tools and temporary files
+*.tmp
+*.temp
+*.bak
+*.orig
+*.rej
+*.patch
+
+# Log files
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Package manager files
+node_modules/
+.npm/
+.pnpm-store/
+
+# Python virtual environments (if used for scripts)
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+
+# Documentation build
+docs/_build/
+docs/html/
+docs/latex/
+
+# Test coverage
+coverage/
+*.gcov
+*.gcno
+*.gcda

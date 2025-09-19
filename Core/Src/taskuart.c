@@ -3,6 +3,19 @@
 #include "gpio.h"
 #include "task.h"
 
+#define STX_BUF_POS 0x0
+#define ETX_BUF_POS 0x5
+
+#define UART_ACK_CODE 0xFF
+#define UART_NACK_CODE 0xFE
+
+typedef enum _errorcode {
+  ERROR_CODE_NO_ERROR         =0x0,
+  ERROR_CODE_WRONG_COMMAND   = 0x1,
+  ERROR_CODE_WRONG_INTERVAL  = 0x2,
+  ERROR_CODE_WRONG_NUM_BLINK = 0x3,
+} UART_ERROR_CODE;
+
 Queue uart_rx_queue; // PC -> STM
 Queue uart_tx_queue; // STM -> PC
 uint8_t uart_hal_rx_temp; 
@@ -32,6 +45,14 @@ int uart_hal_getchar(uint8_t *ch) { // PC > STM
   return 0;
 }
 
+
+
+Uart_Message packetToMessage(uint8_t *buf){
+    Uart_Message msg = {0};
+
+    return msg;
+}
+
 void uart_protocol(void) {
   static uint8_t packet[MAX_PACKET_SIZE];
   static uint8_t index = 0;
@@ -41,69 +62,62 @@ void uart_protocol(void) {
     pop_queue(&uart_rx_queue, &data);
     packet[index++] = data;
 
-    if(index >= 6) {
-      if(packet[0] == STX && packet[5] == ETX) {
-        uint8_t cmd = packet[1];
-        uint8_t d0 = packet[2];
-        uint8_t d1 = packet[3];
-        uint8_t sum = packet[4];
+    if(index <= 6) {
+      if(packet[STX_BUF_POS] == STX && packet[ETX_BUF_POS] == ETX) {
 
-        if(sum == 0xff - (cmd + d0 + d1)) {
+        if(calculate_checksum(&packet[], 3) != pack) return;
+        Uart_Message msg = packetToMessage(packet);
+     
          switch (cmd)
           {
           case CMD_LED_OFF:
-            HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
-            uart_send_packet(0xff, 0, 0);
+            setLedOperation(LED_OFF);
+            sendResponse(UART_ACK_CODE,ERROR_CODE_NO_ERROR );
             break;
 
           case CMD_LED_ON:
-            HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
-            uart_send_packet(0xff, 0, 0);
+            setLedOperation(LED_OFF);
+            sendResponse(UART_ACK_CODE,ERROR_CODE_NO_ERROR );
             break;
 
           case CMD_LED_BLINK:
-            if(d0 > 0 && d0 <=50) { 
-              interval = (int)d0 * 100;
-              if(d1 == 0) {
-                //continuous
-                blink_count = 0xff;
-              } else if(d1 == 0xff) {
-                //stop
-                HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
-                blink_count = 0;
-              } else if(d1 <= 200) {
-                //toggle 
-                blink_count = (uint8_t)d1;
-
-              } else {
-                uart_send_packet(0xfe, 0x03, 0); // Wrong Number of Blink
-              }
-            } else {
-              uart_send_packet(0xfe, 0x02, 0); // Wrong Interval
+            setLedOperation(LED_BLINK);
+            if(d0!=){
+                sendResponse(UART_NACK_CODE,ERROR_CODE_WRONG_INTERVAL );
+                return;
             }
-            uart_send_packet(0xff, 0, 0);
+             setInterval();
+            if(d1!= ){
+               sendResponse(UART_NACK_CODE,ERROR_CODE_WRONG_INTERVAL );
+               return;
+            }
+            setBlinkCount();
+            sendResponse(UART_ACK_CODE,ERROR_CODE_NO_ERROR );
             break;
-        
           default:
-            uart_send_packet(0xfe, 0x01, 0); // Wrong Command
+            sendResponse(UART_NACK_CODE,ERROR_CODE_WRONG_COMMAND );
             break;
           }
         } else {
-          uart_send_packet(0xfe, 0x01, 0);
+          sendResponse(UART_ACK_CODE,ERROR_CODE_NO_ERROR );
         }
       index = 0;
       }
     }
-  }
  }
 
- void uart_send_packet(uint8_t cmd, uint8_t d0, uint8_t d1) {
+uint8_t calculate_checksum(uint8_t *buf, int len)
+{
+ return 0; 
+}
+
+void uart_send_packet(uint8_t cmd, uint8_t d0, uint8_t d1) {
   uint8_t packet[MAX_PACKET_SIZE];
   packet[0] = STX;
   packet[1] = cmd;
   packet[2] = d0;
   packet[3] = d1;
-  packet[4] = 0xff - (cmd + d0 + d1);
+  packet[4] = calculate_checksum(&packet[1], 3); 
   packet[5] = ETX; 
 
 //   for(int i = 0; i < MAX_PACKET_SIZE; i++) {
@@ -114,6 +128,10 @@ void uart_protocol(void) {
  
 }
 
+void sendResponse(uint8_t reply_code, UART_ERROR_CODE error_code)
+{
+    // uart_send_packet();
+}
 // void uart_hal_putchar(uint8_t data) { // STM > PC
 //   push_queue(&uart_tx_queue, data);
 //   if(uart_tx_queue.size == 1) {

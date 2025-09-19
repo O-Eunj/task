@@ -18,6 +18,14 @@ extern Queue uart_rx_queue;
 extern Queue uart_tx_queue;
 extern uint8_t uart_hal_rx_temp;
 
+typedef struct _message
+{
+  uint8_t cmd;
+  uint8_t d0;
+  uint8_t d1;
+  uint8_t checksum;
+}Uart_Message;
+
 void uart_hal_buffer_init();
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
 int uart_hal_getchar(uint8_t *ch);
