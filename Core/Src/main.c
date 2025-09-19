@@ -105,6 +105,7 @@ int main(void)
     /* USER CODE END WHILE */
     uart_protocol();
     task_led();
+    
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
